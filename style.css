@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.6;
+}
+.tape {
+    display: flex;
+    border: 2px solid #444;
+    padding: 10px;
+    margin: 20px 0;
+}
+.tape div {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ccc;
+    text-align: center;
+    line-height: 30px;
+    margin-right: 2px;
+}
+.tape .head {
+    background-color: #007acc;
+    color: white;
+}
