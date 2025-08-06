@@ -1,5 +1,5 @@
 
-let tape = ["_", "1", "0", "1", "_"];
+let tape = ["1", "0", "1", "1", "0"];
 let head = 1;
 let state = "q0";
 
@@ -50,7 +50,7 @@ function step() {
 }
 
 function reset() {
-    tape = ["_", "1", "0", "1", "_"];
+    tape = ["1", "0", "1", "1", "0"];
     head = 1;
     state = "q0";
     renderTape();
