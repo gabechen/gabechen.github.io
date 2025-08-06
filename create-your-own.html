@@ -102,13 +102,12 @@
         cell.className = "cell";
         cell.textContent = symbol;
         if (i === head) cell.classList.add("head");
-        cell.onclick = () => {
-          const newSymbol = prompt("Enter symbol for this cell:", symbol);
-          if (newSymbol !== null) {
+        cell.contentEditable = true;
+        cell.addEventListener("blur", () => {
+            const newSymbol = cell.textContent.trim();
             tape[i] = newSymbol[0] || '_';
             renderTape();
-          }
-        };
+        });
         container.appendChild(cell);
       });
       document.getElementById("currentState").textContent = state;
