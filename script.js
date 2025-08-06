@@ -1,7 +1,7 @@
-
 let tape = ["1", "0", "1", "1", "0"];
 let head = 1;
 let state = "q0";
+let intervalId = null;
 
 const transitions = {
     "q0_1": ["q0", "0", "R"],
@@ -25,7 +25,10 @@ function renderTape() {
 }
 
 function step() {
-    if (state === "halt") return;
+    if (state === "halt") {
+        pause();
+        return;
+    }
 
     const symbol = tape[head] || "_";
     const key = `${state}_${symbol}`;
@@ -33,23 +36,41 @@ function step() {
 
     if (!rule) {
         state = "halt";
+        renderTape();
+        pause();
         return;
     }
 
     const [newState, write, move] = rule;
     tape[head] = write;
     head += move === "R" ? 1 : -1;
+
     if (head < 0) {
         tape.unshift("_");
         head = 0;
     } else if (head >= tape.length) {
         tape.push("_");
     }
+
     state = newState;
     renderTape();
 }
 
+function run() {
+    if (intervalId === null) {
+        intervalId = setInterval(step, 500);
+    }
+}
+
+function pause() {
+    if (intervalId !== null) {
+        clearInterval(intervalId);
+        intervalId = null;
+    }
+}
+
 function reset() {
+    pause();
     tape = ["1", "0", "1", "1", "0"];
     head = 1;
     state = "q0";
