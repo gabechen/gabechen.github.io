@@ -1,13 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create Your Own Turing Machine</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Visual Turing Machine Designer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Create Your Own Turing Machine</h1>
-    <p>This page is under development. Soon, you’ll be able to define states, transitions, and tape input!</p>
-    <p><a href="index.html">← Back to homepage</a></p>
+  <h1>Visual Turing Machine Designer</h1>
+
+  <div class="tape" id="tapeDisplay"></div>
+  <p>Current State: <strong id="currentState">—</strong></p>
+
+  <div class="controls">
+    <button onclick="step()">Step</button>
+    <button onclick="run()">Run</button>
+    <button onclick="pause()">Pause</button>
+    <button onclick="reset()">Reset</button>
+    <button onclick="addCell()">+ Add Cell</button>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h2>Add Transition</h2>
+      <form id="transitionForm">
+        <label>Current State: <input id="currentStateInput" required></label><br>
+        <label>Read Symbol: <input id="readSymbolInput" maxlength="1" required></label><br>
+        <label>Write Symbol: <input id="writeSymbolInput" maxlength="1" required></label><br>
+        <label>Move:
+          <select id="directionInput">
+            <option value="R">Right</option>
+            <option value="L">Left</option>
+          </select>
+        </label><br>
+        <label>Next State: <input id="nextStateInput" required></label><br>
+        <button type="submit">Add Transition</button>
+      </form>
+    </div>
+    <div class="transitions">
+      <h2>Transition Table</h2>
+      <table id="transitionTable">
+        <tr><th>Key</th><th>Write</th><th>Move</th><th>Next</th></tr>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let tape = ['_', '_', '_', '_', '_'];
+    let head = 2;
+    let state = 'q0';
+    let transitions = {};
+    let intervalId = null;
+
+    function renderTape() {
+      const container = document.getElementById("tapeDisplay");
+      container.innerHTML = "";
+      tape.forEach((symbol, i) => {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.textContent = symbol;
+        if (i === head) cell.classList.add("head");
+        cell.onclick = () => {
+          const newSymbol = prompt("Enter symbol for this cell:", symbol);
+          if (newSymbol !== null) {
+            tape[i] = newSymbol[0] || '_';
+            renderTape();
+          }
+        };
+        container.appendChild(cell);
+      });
+      document.getElementById("currentState").textContent = state;
+    }
+
+    function step() {
+      if (state === "halt") return pause();
+
+      const symbol = tape[head] || '_';
+      const key = `${state}_${symbol}`;
+      const rule = transitions[key];
+      if (!rule) return pause();
+
+      const [newState, write, move] = rule;
+      tape[head] = write;
+      head += move === "R" ? 1 : -1;
+
+      if (head < 0) {
+        tape.unshift('_');
+        head = 0;
+      } else if (head >= tape.length) {
+        tape.push('_');
+      }
+
+      state = newState;
+      renderTape();
+    }
+
+    function run() {
+      if (!intervalId) intervalId = setInterval(step, 500);
+    }
+
+    function pause() {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+
+    function reset() {
+      pause();
+      tape = ['_', '_', '_', '_', '_'];
+      head = 2;
+      state = 'q0';
+      renderTape();
+    }
+
+    function addCell() {
+      tape.push('_');
+      renderTape();
+    }
+
+    document.getElementById("transitionForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const cs = document.getElementById("currentStateInput").value.trim();
+      const rs = document.getElementById("readSymbolInput").value.trim();
+      const ws = document.getElementById("writeSymbolInput").value.trim();
+      const dir = document.getElementById("directionInput").value;
+      const ns = document.getElementById("nextStateInput").value.trim();
+
+      const key = `${cs}_${rs}`;
+      transitions[key] = [ns, ws, dir];
+
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${key}</td><td>${ws}</td><td>${dir}</td><td>${ns}</td>`;
+      document.getElementById("transitionTable").appendChild(row);
+
+      e.target.reset();
+    });
+
+    renderTape();
+  </script>
 </body>
 </html>

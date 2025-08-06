@@ -77,4 +77,7 @@ function reset() {
     renderTape();
 }
 
-document.addEventListener("DOMContentLoaded", renderTape);
+document.addEventListener("DOMContentLoaded", () => {
+    renderTape();
+    run();
+});

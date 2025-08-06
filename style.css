@@ -1,25 +1,111 @@
 body {
     font-family: Arial, sans-serif;
     padding: 40px;
-    max-width: 700px;
+    max-width: 900px;
     margin: auto;
     line-height: 1.6;
+    background-color: #f9f9f9;
 }
+
+h1, h2 {
+    color: #222;
+}
+
 .tape {
     display: flex;
     border: 2px solid #444;
     padding: 10px;
     margin: 20px 0;
+    overflow-x: auto;
+    background-color: white;
 }
-.tape div {
-    width: 30px;
-    height: 30px;
+
+.tape div,
+.cell {
+    width: 40px;
+    height: 40px;
     border: 1px solid #ccc;
     text-align: center;
-    line-height: 30px;
+    line-height: 40px;
     margin-right: 2px;
+    font-family: monospace;
+    font-size: 1.1em;
+    cursor: pointer;
+    background-color: #fff;
+    transition: background-color 0.2s;
 }
-.tape .head {
+
+.tape .head,
+.cell.head {
     background-color: #007acc;
     color: white;
+    font-weight: bold;
+}
+
+.controls {
+    margin-bottom: 20px;
+}
+
+.controls button {
+    margin: 5px 8px 5px 0;
+    padding: 8px 16px;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.controls button:hover {
+    background-color: #005e99;
+}
+
+input, select, textarea {
+    padding: 6px 10px;
+    margin: 6px 0;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+form label {
+    display: block;
+    margin-top: 10px;
+}
+
+button[type="submit"] {
+    margin-top: 15px;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.transitions table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.transitions th,
+.transitions td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: center;
 }
