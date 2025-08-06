@@ -1,7 +1,6 @@
-// Turing Machine: flips 0 → 1, 1 → 0 then halts
 
-let tape = ["1", "0", "1", "_"];
-let head = 0;
+let tape = ["_", "1", "0", "1", "_"];
+let head = 1;
 let state = "q0";
 
 const transitions = {
@@ -51,8 +50,8 @@ function step() {
 }
 
 function reset() {
-    tape = ["1", "0", "1", "_"];
-    head = 0;
+    tape = ["_", "1", "0", "1", "_"];
+    head = 1;
     state = "q0";
     renderTape();
 }
