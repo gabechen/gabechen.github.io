@@ -172,8 +172,8 @@
       tape = [...example.tape];
       head = example.head;
       state = example.state;
-      transitions = { ...example.transitions };
       clearTransitions();
+      transitions = { ...example.transitions };
       for (const [key, [ns, ws, dir]] of Object.entries(transitions)) {
         const row = document.createElement("tr");
         row.innerHTML = `<td>${key}</td><td>${ws}</td><td>${dir}</td><td>${ns}</td>`;
