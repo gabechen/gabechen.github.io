@@ -18,6 +18,12 @@
     <button onclick="reset()">Reset</button>
     <button onclick="addCell()">+ Add Cell</button>
     <button onclick="clearTransitions()">🗑 Clear Transitions</button>
+    <select id="exampleSelector" onchange="loadExample(this.value)">
+      <option value="">📚 Load Example...</option>
+      <option value="flip">Flip Bits</option>
+      <option value="parity">Even Parity Checker</option>
+      <option value="mirror">Mirror Tape</option>
+    </select>
   </div>
 
   <div class="grid" style="margin-top: 10px;">
@@ -51,6 +57,42 @@
     let state = 'q0';
     let transitions = {};
     let intervalId = null;
+
+    const examples = {
+      flip: {
+        tape: ['1', '0', '1', '1', '0'],
+        head: 0,
+        state: 'q0',
+        transitions: {
+          'q0_1': ['q0', '0', 'R'],
+          'q0_0': ['q0', '1', 'R'],
+          'q0__': ['halt', '_', 'R']
+        }
+      },
+      parity: {
+        tape: ['1', '0', '1', '1'],
+        head: 0,
+        state: 'q0',
+        transitions: {
+          'q0_1': ['q1', '1', 'R'],
+          'q0_0': ['q0', '0', 'R'],
+          'q0__': ['even', '_', 'R'],
+          'q1_1': ['q0', '1', 'R'],
+          'q1_0': ['q1', '0', 'R'],
+          'q1__': ['odd', '_', 'R']
+        }
+      },
+      mirror: {
+        tape: ['1', '0', '1'],
+        head: 0,
+        state: 'q0',
+        transitions: {
+          'q0_1': ['q0', '1', 'R'],
+          'q0_0': ['q0', '0', 'R'],
+          'q0__': ['halt', '_', 'R'] // Placeholder
+        }
+      }
+    };
 
     function renderTape() {
       const container = document.getElementById("tapeDisplay");
@@ -121,6 +163,23 @@
       transitions = {};
       const table = document.getElementById("transitionTable");
       table.innerHTML = '<tr><th>Key</th><th>Write</th><th>Move</th><th>Next</th></tr>';
+    }
+
+    function loadExample(exampleKey) {
+      if (!examples[exampleKey]) return;
+      const example = examples[exampleKey];
+      pause();
+      tape = [...example.tape];
+      head = example.head;
+      state = example.state;
+      transitions = { ...example.transitions };
+      clearTransitions();
+      for (const [key, [ns, ws, dir]] of Object.entries(transitions)) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${key}</td><td>${ws}</td><td>${dir}</td><td>${ns}</td>`;
+        document.getElementById("transitionTable").appendChild(row);
+      }
+      renderTape();
     }
 
     document.getElementById("transitionForm").addEventListener("submit", e => {
