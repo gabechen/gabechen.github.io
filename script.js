@@ -7,7 +7,10 @@ let state = "q0";
 const transitions = {
     "q0_1": ["q0", "0", "R"],
     "q0_0": ["q0", "1", "R"],
-    "q0__": ["halt", "_", "R"]
+    "q0__": ["q1", "_", "l"],
+    "q1_1": ["q1", "0", "R"],
+    "q1_0": ["q1", "1", "R"],
+    "q1__": ["halt", "_", "R"]
 };
 
 function renderTape() {
