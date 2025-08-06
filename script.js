@@ -1,5 +1,5 @@
 let tape = ["1", "0", "1", "1", "0"];
-let head = 1;
+let head = 0;
 let state = "q0";
 let intervalId = null;
 
@@ -72,7 +72,7 @@ function pause() {
 function reset() {
     pause();
     tape = ["1", "0", "1", "1", "0"];
-    head = 1;
+    head = 0;
     state = "q0";
     renderTape();
 }
