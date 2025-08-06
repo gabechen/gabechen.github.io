@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Visual Turing Machine Designer v3</title>
+  <title>Gabe's Turing Machine Designer</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🎛️ Visual Turing Machine Designer v3</h1>
+  <h1>Gabe's Turing Machine Designer</h1>
 
   <div class="tape" id="tapeDisplay"></div>
   <p style="margin: 5px 0;">Current State: <strong id="currentState">—</strong></p>
@@ -16,13 +16,13 @@
     <button onclick="run()">Run</button>
     <button onclick="pause()">Pause</button>
     <button onclick="reset()">Reset</button>
-    <button onclick="addCell()">+ Add Cell</button>
-    <button onclick="clearTransitions()">🗑 Clear Transitions</button>
+    <button onclick="addCell()">Add Cell</button>
+    <button onclick="clearTransitions()">Clear Transitions</button>
     <select id="exampleSelector" onchange="loadExample(this.value)">
       <option value="">📚 Load Example...</option>
       <option value="flip">Flip Bits</option>
       <option value="parity">Even Parity Checker</option>
-      <option value="mirror">Mirror Tape</option>
+      <option value="mirror">Mirror Tape (WIP DOES NOT WORK)</option>
     </select>
   </div>
 
