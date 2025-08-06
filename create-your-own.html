@@ -26,21 +26,21 @@
     </select>
   </div>
 
-  <div class="grid" style="margin-top: 10px;">
+ <div class="grid" style="margin-top: 10px;">
     <div>
       <h2>Add Transition</h2>
-      <form id="transitionForm">
-        <label>Current State: <input id="currentStateInput" required></label><br>
-        <label>Read Symbol: <input id="readSymbolInput" maxlength="1" required></label><br>
-        <label>Write Symbol: <input id="writeSymbolInput" maxlength="1" required></label><br>
-        <label>Move:
+      <form id="transitionForm" style="margin-top: 5px;">
+        <label style="margin: 2px 0; display: block;">Current State: <input id="currentStateInput" required></label>
+        <label style="margin: 2px 0; display: block;">Read Symbol: <input id="readSymbolInput" maxlength="1" required></label>
+        <label style="margin: 2px 0; display: block;">Write Symbol: <input id="writeSymbolInput" maxlength="1" required></label>
+        <label style="margin: 2px 0; display: block;">Move:
           <select id="directionInput">
             <option value="R">Right</option>
             <option value="L">Left</option>
           </select>
-        </label><br>
-        <label>Next State: <input id="nextStateInput" required></label><br>
-        <button type="submit">Add Transition</button>
+        </label>
+        <label style="margin: 2px 0; display: block;">Next State: <input id="nextStateInput" required></label>
+        <button type="submit" style="margin-top: 5px;">Add Transition</button>
       </form>
     </div>
     <div class="transitions">
