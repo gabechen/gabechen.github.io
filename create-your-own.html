@@ -82,16 +82,42 @@
           'q1__': ['odd', '_', 'R']
         }
       },
-      mirror: {
-        tape: ['1', '0', '1'],
+      mirror :{
+        tape: ['1', '0', '1'],   // example input w = 101  → output 101101
         head: 0,
         state: 'q0',
         transitions: {
-          'q0_1': ['q0', '1', 'R'],
-          'q0_0': ['q0', '0', 'R'],
-          'q0__': ['halt', '_', 'R'] // Placeholder
+          // q0: scan left→right for the next unmarked symbol; if none, halt
+          'q0_1': ['qR1', 'X', 'R'],  // mark 1 as X, go copy a '1' at the right end
+          'q0_0': ['qR0', 'Y', 'R'],  // mark 0 as Y, go copy a '0' at the right end
+          'q0_X': ['q0',  'X', 'R'],  // skip already processed
+          'q0_Y': ['q0',  'Y', 'R'],
+          'q0__': ['halt','_', 'R'],  // all symbols processed → done
+
+          // qR1: run right to the first blank, write '1', then go leftward
+          'qR1_1': ['qR1', '1', 'R'],
+          'qR1_0': ['qR1', '0', 'R'],
+          'qR1_X': ['qR1', 'X', 'R'],
+          'qR1_Y': ['qR1', 'Y', 'R'],
+          'qR1__': ['qL',  '1', 'L'],
+
+          // qR0: run right to the first blank, write '0', then go leftward
+          'qR0_1': ['qR0', '1', 'R'],
+          'qR0_0': ['qR0', '0', 'R'],
+          'qR0_X': ['qR0', 'X', 'R'],
+          'qR0_Y': ['qR0', 'Y', 'R'],
+          'qR0__': ['qL',  '0', 'L'],
+
+          // qL: return to the left margin (blank), then step right and resume q0
+          'qL_1':  ['qL',  '1', 'L'],
+          'qL_0':  ['qL',  '0', 'L'],
+          'qL_X':  ['qL',  'X', 'L'],
+          'qL_Y':  ['qL',  'Y', 'L'],
+          'qL__':  ['q0',  '_', 'R'] // back to start area, now scan again
         }
       }
+};
+
     };
 
     function renderTape() {
