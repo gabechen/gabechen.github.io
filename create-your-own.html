@@ -87,33 +87,48 @@
         head: 0,
         state: 'q0',
         transitions: {
-          // q0: scan left→right for the next unmarked symbol; if none, halt
-          'q0_1': ['qR1', 'X', 'R'],  // mark 1 as X, go copy a '1' at the right end
-          'q0_0': ['qR0', 'Y', 'R'],  // mark 0 as Y, go copy a '0' at the right end
-          'q0_X': ['q0',  'X', 'R'],  // skip already processed
-          'q0_Y': ['q0',  'Y', 'R'],
-          'q0__': ['halt','_', 'R'],  // all symbols processed → done
+          'q0_1': ['qFindR1', 'X', 'R'],  // mark left '1', go find matching rightmost
+    'q0_0': ['qFindR0', 'Y', 'R'],  // mark left '0'
+    'q0_X': ['q0', 'X', 'R'],       // skip marked
+    'q0_Y': ['q0', 'Y', 'R'],
+    'q0__': ['halt', '_', 'R'],     // done, all mirrored
 
-          // qR1: run right to the first blank, write '1', then go leftward
-          'qR1_1': ['qR1', '1', 'R'],
-          'qR1_0': ['qR1', '0', 'R'],
-          'qR1_X': ['qR1', 'X', 'R'],
-          'qR1_Y': ['qR1', 'Y', 'R'],
-          'qR1__': ['qL',  '1', 'L'],
+    // qFindR1: run right until blank or marked, then backtrack
+    'qFindR1_0': ['qFindR1', '0', 'R'],
+    'qFindR1_1': ['qFindR1', '1', 'R'],
+    'qFindR1_X': ['qFindR1', 'X', 'R'],
+    'qFindR1_Y': ['qFindR1', 'Y', 'R'],
+    'qFindR1__': ['qSwap1', '_', 'L'],  // at right end, go back to swap
 
-          // qR0: run right to the first blank, write '0', then go leftward
-          'qR0_1': ['qR0', '1', 'R'],
-          'qR0_0': ['qR0', '0', 'R'],
-          'qR0_X': ['qR0', 'X', 'R'],
-          'qR0_Y': ['qR0', 'Y', 'R'],
-          'qR0__': ['qL',  '0', 'L'],
+    // qFindR0 is symmetric
+    'qFindR0_0': ['qFindR0', '0', 'R'],
+    'qFindR0_1': ['qFindR0', '1', 'R'],
+    'qFindR0_X': ['qFindR0', 'X', 'R'],
+    'qFindR0_Y': ['qFindR0', 'Y', 'R'],
+    'qFindR0__': ['qSwap0', '_', 'L'],
 
-          // qL: return to the left margin (blank), then step right and resume q0
-          'qL_1':  ['qL',  '1', 'L'],
-          'qL_0':  ['qL',  '0', 'L'],
-          'qL_X':  ['qL',  'X', 'L'],
-          'qL_Y':  ['qL',  'Y', 'L'],
-          'qL__':  ['q0',  '_', 'R'] // back to start area, now scan again
+    // qSwap1: walk left until unmarked, replace, then restore left side
+    'qSwap1_0': ['qSwap1', '0', 'L'],
+    'qSwap1_1': ['qSwap1', '1', 'L'],
+    'qSwap1_X': ['qReturn1', '1', 'L'],  // swap the rightmost with '1'
+    'qSwap1_Y': ['qReturn1', '0', 'L'],  // if it was a '0', swap properly
+
+    // qSwap0: similar but expecting to put '0' at right
+    'qSwap0_0': ['qSwap0', '0', 'L'],
+    'qSwap0_1': ['qSwap0', '1', 'L'],
+    'qSwap0_X': ['qReturn0', '1', 'L'],
+    'qSwap0_Y': ['qReturn0', '0', 'L'],
+
+    // qReturn*: go back left to restart scanning
+    'qReturn1_0': ['qReturn1', '0', 'L'],
+    'qReturn1_1': ['qReturn1', '1', 'L'],
+    'qReturn1_X': ['q0', '1', 'R'],   // restored left, resume
+    'qReturn1_Y': ['q0', '0', 'R'],
+
+    'qReturn0_0': ['qReturn0', '0', 'L'],
+    'qReturn0_1': ['qReturn0', '1', 'L'],
+    'qReturn0_X': ['q0', '1', 'R'],
+    'qReturn0_Y': ['q0', '0', 'R'],
         }
       }
 };
