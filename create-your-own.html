@@ -83,52 +83,27 @@
         }
       },
       mirror :{
-        tape: ['1', '0', '1'],   // example input w = 101  → output 101101
+        tape: ['1', '0', '1'],   // example input w = 101  → output 101
         head: 0,
         state: 'q0',
         transitions: {
-          'q0_1': ['qFindR1', 'X', 'R'],  // mark left '1', go find matching rightmost
-    'q0_0': ['qFindR0', 'Y', 'R'],  // mark left '0'
-    'q0_X': ['q0', 'X', 'R'],       // skip marked
-    'q0_Y': ['q0', 'Y', 'R'],
-    'q0__': ['halt', '_', 'R'],     // done, all mirrored
+          'q0_1': ['q21', 'X', 'R'],
+          'q0_0': ['q20', 'X', 'R'],
 
-    // qFindR1: run right until blank or marked, then backtrack
-    'qFindR1_0': ['qFindR1', '0', 'R'],
-    'qFindR1_1': ['qFindR1', '1', 'R'],
-    'qFindR1_X': ['qFindR1', 'X', 'R'],
-    'qFindR1_Y': ['qFindR1', 'Y', 'R'],
-    'qFindR1__': ['qSwap1', '_', 'L'],  // at right end, go back to swap
+          'q21_1': ['q21', '1', 'R'],
+          'q21_0': ['q21', '0', 'R'],
+          'q21_X': ['qw1', 'X', 'L'],
+          'q21_Y': ['qw1', 'Y', 'L'],
 
-    // qFindR0 is symmetric
-    'qFindR0_0': ['qFindR0', '0', 'R'],
-    'qFindR0_1': ['qFindR0', '1', 'R'],
-    'qFindR0_X': ['qFindR0', 'X', 'R'],
-    'qFindR0_Y': ['qFindR0', 'Y', 'R'],
-    'qFindR0__': ['qSwap0', '_', 'L'],
+          'q20_1': ['q20', '1', 'R'],
+          'q20_0': ['q20', '0', 'R'],
+          'q20_X': ['qw0', 'X', 'L'],
+          'q20_Y': ['qw0', 'Y', 'L'],
 
-    // qSwap1: walk left until unmarked, replace, then restore left side
-    'qSwap1_0': ['qSwap1', '0', 'L'],
-    'qSwap1_1': ['qSwap1', '1', 'L'],
-    'qSwap1_X': ['qReturn1', '1', 'L'],  // swap the rightmost with '1'
-    'qSwap1_Y': ['qReturn1', '0', 'L'],  // if it was a '0', swap properly
-
-    // qSwap0: similar but expecting to put '0' at right
-    'qSwap0_0': ['qSwap0', '0', 'L'],
-    'qSwap0_1': ['qSwap0', '1', 'L'],
-    'qSwap0_X': ['qReturn0', '1', 'L'],
-    'qSwap0_Y': ['qReturn0', '0', 'L'],
-
-    // qReturn*: go back left to restart scanning
-    'qReturn1_0': ['qReturn1', '0', 'L'],
-    'qReturn1_1': ['qReturn1', '1', 'L'],
-    'qReturn1_X': ['q0', '1', 'R'],   // restored left, resume
-    'qReturn1_Y': ['q0', '0', 'R'],
-
-    'qReturn0_0': ['qReturn0', '0', 'L'],
-    'qReturn0_1': ['qReturn0', '1', 'L'],
-    'qReturn0_X': ['q0', '1', 'R'],
-    'qReturn0_Y': ['q0', '0', 'R'],
+          'qw1_0': ['q1', '1', 'L'],
+          'qw1_1': ['q1', '1', 'L'],
+          'qw0_0': ['q1', '0', 'L'],
+          'qw0_1': ['q1', '0', 'L'],
         }
       }
 };
