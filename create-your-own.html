@@ -22,7 +22,7 @@
       <option value="">Load Example...</option>
       <option value="flip">Flip Bits</option>
       <option value="parity">Even Parity Checker</option>
-      <option value="mirror">Mirror Tape (WIP DOES NOT WORK)</option>
+      <!--<option value="mirror">Mirror Tape (WIP DOES NOT WORK)</option> -->
     </select>
   </div>
 
@@ -88,21 +88,22 @@
         state: 'q0',
         transitions: {
           'q0_1': ['q21', 'X', 'R'],
-          'q0_0': ['q20', 'X', 'R'],
+          'q0_0': ['q20', 'Y', 'R'],
+          'q1_1': ['q30', "X", 'L']
 
-          'q21_1': ['q21', '1', 'R'],
+          'q21_1': ['q21', '1', 'R'], //go right till XY_
           'q21_0': ['q21', '0', 'R'],
           'q21_X': ['qw1', 'X', 'L'],
           'q21_Y': ['qw1', 'Y', 'L'],
           'q21__': ['qw1', '_', 'L'],
 
-          'q20_1': ['q20', '1', 'R'],
+          'q20_1': ['q20', '1', 'R'], //go right till XY_
           'q20_0': ['q20', '0', 'R'],
           'q20_X': ['qw0', 'X', 'L'],
           'q20_Y': ['qw0', 'Y', 'L'],
           'q20__': ['qw0', '_', 'L'],
 
-          'qw1_0': ['q1', '1', 'L'],
+          'qw1_0': ['q1', '1', 'L'], //write a 1 then go left
           'qw1_1': ['q1', '1', 'L'],
           'qw0_0': ['q1', '0', 'L'],
           'qw0_1': ['q1', '0', 'L'],
