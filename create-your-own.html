@@ -1,222 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Gabe's Turing Machine Designer</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turing Machine Designer | Gabriel Chen</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
-<body>
-  <h1>Gabe's Turing Machine Designer</h1>
+<body data-page="designer">
+    <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Gabriel Chen home">G.C.</a>
+        <nav aria-label="Primary navigation">
+            <a href="index.html#work">Work</a>
+            <a href="index.html#machine">Turing Lab</a>
+            <a href="create-your-own.html" aria-current="page">Designer</a>
+        </nav>
+    </header>
 
-  <div class="tape" id="tapeDisplay"></div>
-  <p style="margin: 5px 0;">Current State: <strong id="currentState">—</strong></p>
+    <main>
+        <section class="page-title">
+            <p class="eyebrow">Transition Function Workshop</p>
+            <h1>Turing Machine Designer</h1>
+            <p>
+                Build a deterministic one-tape machine by editing the tape and adding rules of the form
+                delta(state, symbol) = (next state, write, move).
+            </p>
+        </section>
 
-  <div class="controls" style="margin: 5px 0;">
-    <button onclick="step()">Step</button>
-    <button onclick="run()">Run</button>
-    <button onclick="pause()">Pause</button>
-    <button onclick="reset()">Reset</button>
-    <button onclick="addCell()">Add Cell</button>
-    <button onclick="clearTransitions()">Clear Transitions</button>
-    <select id="exampleSelector" onchange="loadExample(this.value)">
-      <option value="">Load Example...</option>
-      <option value="flip">Flip Bits</option>
-      <option value="parity">Even Parity Checker</option>
-      <!--<option value="mirror">Mirror Tape (WIP DOES NOT WORK)</option> -->
-    </select>
-  </div>
+        <section class="machine-shell">
+            <div class="machine-toolbar">
+                <div>
+                    <span class="label">State</span>
+                    <strong id="currentState">q0</strong>
+                </div>
+                <div>
+                    <span class="label">Head</span>
+                    <strong id="headPosition">0</strong>
+                </div>
+                <div>
+                    <span class="label">Steps</span>
+                    <strong id="stepCount">0</strong>
+                </div>
+                <div>
+                    <span class="label">Status</span>
+                    <strong id="machineStatus">Ready</strong>
+                </div>
+            </div>
 
- <div class="grid" style="margin-top: 10px;">
-    <div>
-      <h2>Add Transition</h2>
-      <form id="transitionForm" style="margin-top: 5px;">
-        <label style="margin: 2px 0; display: block;">Current State: <input id="currentStateInput" required></label>
-        <label style="margin: 2px 0; display: block;">Read Symbol: <input id="readSymbolInput" maxlength="1" required></label>
-        <label style="margin: 2px 0; display: block;">Write Symbol: <input id="writeSymbolInput" maxlength="1" required></label>
-        <label style="margin: 2px 0; display: block;">Move:
-          <select id="directionInput">
-            <option value="R">Right</option>
-            <option value="L">Left</option>
-          </select>
-        </label>
-        <label style="margin: 2px 0; display: block;">Next State: <input id="nextStateInput" required></label>
-        <button type="submit" style="margin-top: 5px;">Add Transition</button>
-      </form>
-    </div>
-    <div class="transitions">
-      <h2>Transition Table</h2>
-      <table id="transitionTable">
-        <tr><th>Key</th><th>Write</th><th>Move</th><th>Next</th></tr>
-      </table>
-    </div>
-  </div>
+            <div id="tapeDisplay" class="tape editable" aria-label="Editable Turing machine tape"></div>
 
-  <script>
-    let tape = ['_', '_', '_', '_', '_'];
-    let head = 2;
-    let state = 'q0';
-    let transitions = {};
-    let intervalId = null;
+            <div class="controls" aria-label="Turing machine controls">
+                <button type="button" data-action="step">Step</button>
+                <button type="button" data-action="run">Run</button>
+                <button type="button" data-action="pause">Pause</button>
+                <button type="button" data-action="reset">Reset</button>
+                <button type="button" data-action="add-cell">Add Cell</button>
+                <button type="button" data-action="clear-transitions">Clear Rules</button>
+                <label class="select-label" for="exampleSelector">
+                    <span>Example</span>
+                    <select id="exampleSelector">
+                        <option value="">Choose a machine...</option>
+                        <option value="flip">Flip Bits</option>
+                        <option value="parity">Parity Checker</option>
+                        <option value="increment">Binary Incrementer</option>
+                        <option value="erase">Erase Tape</option>
+                    </select>
+                </label>
+            </div>
+        </section>
 
-    const examples = {
-      flip: {
-        tape: ['1', '0', '1', '1', '0'],
-        head: 0,
-        state: 'q0',
-        transitions: {
-          'q0_1': ['q0', '0', 'R'],
-          'q0_0': ['q0', '1', 'R'],
-          'q0__': ['halt', '_', 'R']
-        }
-      },
-      parity: {
-        tape: ['1', '0', '1', '1'],
-        head: 0,
-        state: 'q0',
-        transitions: {
-          'q0_1': ['q1', '1', 'R'],
-          'q0_0': ['q0', '0', 'R'],
-          'q0__': ['even', '_', 'R'],
-          'q1_1': ['q0', '1', 'R'],
-          'q1_0': ['q1', '0', 'R'],
-          'q1__': ['odd', '_', 'R']
-        }
-      },
-      mirror :{
-        tape: ['1', '0', '1'],   // example input w = 101  → output 101
-        head: 0,
-        state: 'q0',
-        transitions: {
-          'q0_1': ['q21', 'X', 'R'],
-          'q0_0': ['q20', 'Y', 'R'],
-          'q1_1': ['q30', "X", 'L']
+        <section class="designer-grid">
+            <form id="transitionForm" class="editor-panel">
+                <div class="section-heading compact">
+                    <p class="eyebrow">Rule Editor</p>
+                    <h2>Add Transition</h2>
+                </div>
+                <label>
+                    Current State
+                    <input id="currentStateInput" value="q0" required>
+                </label>
+                <label>
+                    Read Symbol
+                    <input id="readSymbolInput" maxlength="1" value="1" required>
+                </label>
+                <label>
+                    Write Symbol
+                    <input id="writeSymbolInput" maxlength="1" value="0" required>
+                </label>
+                <label>
+                    Move
+                    <select id="directionInput">
+                        <option value="R">Right</option>
+                        <option value="L">Left</option>
+                        <option value="N">Stay</option>
+                    </select>
+                </label>
+                <label>
+                    Next State
+                    <input id="nextStateInput" value="q0" required>
+                </label>
+                <button type="submit">Save Rule</button>
+            </form>
 
-          'q21_1': ['q21', '1', 'R'], //go right till XY_
-          'q21_0': ['q21', '0', 'R'],
-          'q21_X': ['qw1', 'X', 'L'],
-          'q21_Y': ['qw1', 'Y', 'L'],
-          'q21__': ['qw1', '_', 'L'],
-
-          'q20_1': ['q20', '1', 'R'], //go right till XY_
-          'q20_0': ['q20', '0', 'R'],
-          'q20_X': ['qw0', 'X', 'L'],
-          'q20_Y': ['qw0', 'Y', 'L'],
-          'q20__': ['qw0', '_', 'L'],
-
-          'qw1_0': ['q1', '1', 'L'], //write a 1 then go left
-          'qw1_1': ['q1', '1', 'L'],
-          'qw0_0': ['q1', '0', 'L'],
-          'qw0_1': ['q1', '0', 'L'],
-        }
-      }
-};
-
-    function renderTape() {
-      const container = document.getElementById("tapeDisplay");
-      container.innerHTML = "";
-      tape.forEach((symbol, i) => {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.textContent = symbol;
-        if (i === head) cell.classList.add("head");
-        cell.contentEditable = true;
-        cell.addEventListener("blur", () => {
-            const newSymbol = cell.textContent.trim();
-            tape[i] = newSymbol[0] || '_';
-            renderTape();
-        });
-        container.appendChild(cell);
-      });
-      document.getElementById("currentState").textContent = state;
-    }
-
-    function step() {
-      if (state === "halt") return pause();
-
-      const symbol = tape[head] || '_';
-      const key = `${state}_${symbol}`;
-      const rule = transitions[key];
-      if (!rule) return pause();
-
-      const [newState, write, move] = rule;
-      tape[head] = write;
-      head += move === "R" ? 1 : -1;
-
-      if (head < 0) {
-        tape.unshift('_');
-        head = 0;
-      } else if (head >= tape.length) {
-        tape.push('_');
-      }
-
-      state = newState;
-      renderTape();
-    }
-
-    function run() {
-      if (!intervalId) intervalId = setInterval(step, 500);
-    }
-
-    function pause() {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
-
-    function reset() {
-      pause();
-      tape = ['_', '_', '_', '_', '_'];
-      head = 2;
-      state = 'q0';
-      renderTape();
-    }
-
-    function addCell() {
-      tape.push('_');
-      renderTape();
-    }
-
-    function clearTransitions() {
-      transitions = {};
-      const table = document.getElementById("transitionTable");
-      table.innerHTML = '<tr><th>Key</th><th>Write</th><th>Move</th><th>Next</th></tr>';
-    }
-
-    function loadExample(exampleKey) {
-      if (!examples[exampleKey]) return;
-      const example = examples[exampleKey];
-      pause();
-      tape = [...example.tape];
-      head = example.head;
-      state = example.state;
-      clearTransitions();
-      transitions = { ...example.transitions };
-      for (const [key, [ns, ws, dir]] of Object.entries(transitions)) {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${key}</td><td>${ws}</td><td>${dir}</td><td>${ns}</td>`;
-        document.getElementById("transitionTable").appendChild(row);
-      }
-      renderTape();
-    }
-
-    document.getElementById("transitionForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const cs = document.getElementById("currentStateInput").value.trim();
-      const rs = document.getElementById("readSymbolInput").value.trim();
-      const ws = document.getElementById("writeSymbolInput").value.trim();
-      const dir = document.getElementById("directionInput").value;
-      const ns = document.getElementById("nextStateInput").value.trim();
-
-      const key = `${cs}_${rs}`;
-      transitions[key] = [ns, ws, dir];
-
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${key}</td><td>${ws}</td><td>${dir}</td><td>${ns}</td>`;
-      document.getElementById("transitionTable").appendChild(row);
-
-      e.target.reset();
-    });
-
-    renderTape();
-  </script>
+            <div class="editor-panel">
+                <div class="section-heading compact">
+                    <p class="eyebrow">delta Table</p>
+                    <h2>Transition Rules</h2>
+                </div>
+                <div class="table-wrap">
+                    <table id="transitionTable">
+                        <thead>
+                            <tr>
+                                <th>State</th>
+                                <th>Read</th>
+                                <th>Write</th>
+                                <th>Move</th>
+                                <th>Next</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

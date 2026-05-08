@@ -2,60 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Gabriel Chen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabriel Chen | Math, CS, Linguistics</title>
+    <meta name="description" content="Gabriel Chen studies mathematics, computer science, and linguistics at Brown University.">
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
-<body>
+<body data-page="home">
+    <header class="site-header">
+        <a class="brand" href="index.html" aria-label="Gabriel Chen home">G.C.</a>
+        <nav aria-label="Primary navigation">
+            <a href="#work">Work</a>
+            <a href="#machine">Turing Lab</a>
+            <a href="create-your-own.html">Designer</a>
+        </nav>
+    </header>
 
-    <h1>Gabriel Chen</h1>
-    <p><em>Aspiring Computer Scientist | Amateur Linguist</em></p>
+    <main>
+        <section class="hero">
+            <div class="hero-copy">
+                <p class="eyebrow">Brown University · Mathematics + Computer Science + Linguistics</p>
+                <h1>Gabriel Chen</h1>
+                <p class="lede">
+                    I like precise systems with surprising behavior: cryptography, automata,
+                    formal languages, and computational models of natural language.
+                </p>
+                <div class="hero-actions" aria-label="Profile links">
+                    <a class="button primary" href="Gabriel Chen - Brown University Math CS.pdf" target="_blank" rel="noreferrer">Resume</a>
+                    <a class="button" href="https://github.com/gabechen" target="_blank" rel="noreferrer">GitHub</a>
+                    <a class="button" href="https://www.linkedin.com/in/gabriel-chen-724387316/" target="_blank" rel="noreferrer">LinkedIn</a>
+                </div>
+            </div>
+            <aside class="proof-panel" aria-label="Mathematical interests">
+                <div class="proof-line"><span>delta(q, 1)</span><strong>= (q', 0, R)</strong></div>
+                <div class="proof-line"><span>L(G)</span><strong>&subseteq; &Sigma;*</strong></div>
+                <div class="proof-line"><span>Pr[k secure]</span><strong>&asymp; 1 - &epsilon;</strong></div>
+                <div class="proof-line"><span>parse(sentence)</span><strong>&rarr; structure</strong></div>
+            </aside>
+        </section>
 
-    <!-- Optional Headshot -->
-    <!-- <img src="headshot.jpg" alt="Gabriel Chen" class="headshot"> -->
+        <section class="section" id="work">
+            <div class="section-heading">
+                <p class="eyebrow">Research Taste</p>
+                <h2>Where I Spend My Attention</h2>
+            </div>
+            <div class="topic-grid">
+                <article class="topic-card">
+                    <h3>Formal Systems</h3>
+                    <p>Automata, computability, proof structure, and the strange elegance of tiny rule sets.</p>
+                </article>
+                <article class="topic-card">
+                    <h3>Cryptography</h3>
+                    <p>Protocols, hardness assumptions, and the engineering details that turn math into guarantees.</p>
+                </article>
+                <article class="topic-card">
+                    <h3>Language Models</h3>
+                    <p>Syntax, semantics, and ways to model natural language without sanding away its structure.</p>
+                </article>
+            </div>
+        </section>
 
-    <h2>About Me</h2>
-    <p>
-        I'm Gabriel Chen, a sophomore at Brown University studying Mathematics, Computer Science, 
-        and Linguistics. Some topics I enjoy studying are cryptography, formal systems, 
-        and modeling natural language.
-    </p>
+        <section class="section machine-section" id="machine">
+            <div class="section-heading">
+                <p class="eyebrow">Interactive Computability</p>
+                <h2>A Small Turing Machine Lab</h2>
+                <p>
+                    This machine scans a binary string, flips every bit, then halts on the first blank.
+                    Step through it to watch the transition function become motion.
+                </p>
+            </div>
 
-    <h2>Links</h2>
-    <ul>
-        <li><a href="https://www.linkedin.com/in/gabriel-chen-724387316/" target="_blank">LinkedIn</a></li>
-        <li><a href="https://github.com/gabechen" target="_blank">GitHub</a></li>
-        <li><a href="Gabriel Chen - Brown University Math CS.pdf" target="_blank">Resume (PDF)</a></li>
-    </ul>
+            <div class="machine-shell">
+                <div class="machine-toolbar">
+                    <div>
+                        <span class="label">State</span>
+                        <strong id="currentState">q0</strong>
+                    </div>
+                    <div>
+                        <span class="label">Steps</span>
+                        <strong id="stepCount">0</strong>
+                    </div>
+                    <div>
+                        <span class="label">Status</span>
+                        <strong id="machineStatus">Ready</strong>
+                    </div>
+                </div>
+                <div id="tapeDisplay" class="tape" aria-label="Turing machine tape"></div>
+                <div class="controls" aria-label="Turing machine controls">
+                    <button type="button" data-action="step">Step</button>
+                    <button type="button" data-action="run">Run</button>
+                    <button type="button" data-action="pause">Pause</button>
+                    <button type="button" data-action="reset">Reset</button>
+                    <a class="button subtle" href="create-your-own.html">Open Designer</a>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <h2>Turing Machine</h2>
-    <p>I think Turing Machines are really cool, so here's one that will keep scanning across the tape and flip bits.</p>
-    
-    <div id="tapeDisplay" class="tape"></div>
-    <p>Current State: <span id="currentState">q0</span></p>
-    <button onclick="step()">Step</button>
-    <button onclick="run()">Run</button>
-    <button onclick="pause()">Pause</button>
-    <button onclick="reset()">Reset</button>
-
-    <!--<p><a href="create-your-own.html">Create Your Own Turing Machine →</a></p>
-    <h2>Projects</h2>
-    <ul>
-        <li>
-            <strong>Placeholder
-        </li>
-    </ul>
-
-    <h2>Research</h2>
-    <ul>
-        <li>
-            <strong>Placeholder
-        </li>
-    </ul>
-
-    <p style="margin-top: 40px; font-size: 0.9em;">
-        © 2025 Gabriel Chen • Last updated August 2025
-    </p> -->
-
+    <footer>
+        <span>Gabriel Chen</span>
+        <span>Last updated 2026</span>
+    </footer>
 </body>
 </html>
